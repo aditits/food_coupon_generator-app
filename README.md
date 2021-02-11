@@ -1,6 +1,6 @@
 # MI_assignment
 
-## SETTING UP BACKEND:
+## SETTING UP BACK-END:
 ### 1.installing 
         docker:https://docs.docker.com/engine/install/ubuntu/
         docker-compose:https://docs.docker.com/compose/install/
@@ -10,7 +10,7 @@
         ii. sudo docker-compose up --build
         iii. sudo docker exec -ti coupon-app sh -c "python manage.py makemigrations"
         iv. sudo docker exec -ti coupon-app sh -c "python manage.py migrate"
-### 3.Setting up front-end
+## SETTING UP FRONT-END
         i.download flutter pluggin on android studio
         ii.setup dart SDK on android studio
      
