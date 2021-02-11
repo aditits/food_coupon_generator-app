@@ -6,7 +6,7 @@
         docker-compose:https://docs.docker.com/compose/install/
         
 ### 2.Building and running back-end
-        i. cd into MI_assignment/coupon-app-backend/
+        i. cd into MI_assignment/app_backend/
         ii. sudo docker-compose up --build
         iii. sudo docker exec -ti coupon-app sh -c "python manage.py makemigrations"
         iv. sudo docker exec -ti coupon-app sh -c "python manage.py migrate"
