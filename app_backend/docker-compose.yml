@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  app:
+    container_name: coupon-app
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    networks:
+      default:
+        aliases:
+          - back-end
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python manage.py wait_for_db &&
+                  python manage.py makemigrations &&
+                   python manage.py migrate &&
+                   python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=couponapp
+      - DB_USER=postgres
+      - DB_PASS=aditi123
+      - DEBUG=1
+      - ALLOWED_HOSTS=127.0.0.1
+      - RAZORPAY_PUBLIC_KEY=rzp_test_zoBh33PLvLoeeo
+      - RAZORPAY_PRIVATE_KEY=Zo1ZUzqGxRJcwIPRtvn3BSfV
+      - FCM_SERVER_KEY=AAAAb4F7vwg:APA91bEdDZ2Ncec3LcCFGfVpbef2T04pcXjYz_nBD_J455aepWZVKLPSL6oZUPHAszD9Z_rJy5m4FAljCIGBkOk-igD_7kUFtqBQNLlIr9zdlnKr03FfCSGU8ak49dWe5vkgsdE9a1IJ
+      - TWILIO_ACCOUNT_SID=ACef6091d7a7314c9407e1ebc11ea494a9
+      - TWILIO_AUTH_TOKEN=370686cf75ce269febd16a4acbcbe328
+      - TWILIO_DEFAULT_CALLERID=+17402003353
+
+    depends_on:
+      - db
+      - cache
+  db:
+    container_name: coupon_db
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=couponapp
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=aditi123
+  cache:
+    container_name: coupon_cache
+    image: memcached
+    ports:
+      - "11212:11211"
+    entrypoint:
+      - memcached
+      - -m 64
