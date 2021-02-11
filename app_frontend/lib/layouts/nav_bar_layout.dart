@@ -95,7 +95,7 @@ class NavBarLayoutScreenState extends State<NavBarLayoutScreen>
   }
 
   Color getSelectedColor() {
-    return ColorKey.registerBox;
+    return Colors.yellow[800];
   }
 
   Color getUnSelectedColor() {
