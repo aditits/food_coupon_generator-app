@@ -5,8 +5,6 @@ from coupon import views
 router = DefaultRouter()
 
 app_name = 'coupon'
-
-# router.register('account-detail', views.CustomerAccountDetailsViewSet, basename='account-detail')
 router.register('coupons', views.CouponViewSet, basename='coupons')
 
 

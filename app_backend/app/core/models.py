@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
         data = extra_fields.copy()
         user_type = data.get('user_type', None)
         if user_type is None:
-            user.user_type = 3
+            user.user_type = 4
         user.set_password(password)
         user.fk_committee = None
         user.fk_vendor = None
@@ -40,51 +40,6 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
-
-    def create_cg_user(self, name, password,  **extra_fields):
-        """Creates and saves a new restaurant user"""
-        user = self.create_user(name, password, **extra_fields)
-        user.is_staff = True
-        user.user_type = 2
-        user.fk_committee = None
-        user.save(using=self._db)
-
-        return user
-
-    def create_admin_user(self, name, password, **extra_fields):
-        """Creates and saves a new admin_user user"""
-        user = self.create_user(name, password, **extra_fields)
-        user.user_type = 1
-        user.save(using=self._db)
-
-        return user
-
-    def create_coordinator(self, name, password, **extra_fields):
-        """Creates and saves a new admin_user user"""
-        user = self.create_user(name, password, **extra_fields)
-        user.user_type = 3
-        user.save(using=self._db)
-
-        return user
-
-    def create_organizer(self, name, password, **extra_fields):
-        """Creates and saves a new Delivery Agent User"""
-        user = self.create_user(name, password, **extra_fields)
-        user.user_type = 4
-        user.name = name
-        user.save(using=self._db)
-
-        return user
-
-    def create_vendor(self, phone, password, name, **extra_fields):
-        """Creates and saves a new Delivery Agent User"""
-        user = self.create_user(phone, password, **extra_fields)
-        user.user_type = 5
-        user.name = name
-        user.save(using=self._db)
-
-        return user
-
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model that supports using phone instead of username"""
@@ -104,8 +59,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     fk_committee = models.ForeignKey('Committee', null=True, blank=True, on_delete=models.PROTECT)
     fk_vendor = models.ForeignKey('Vendor', null=True, blank=True, on_delete=models.PROTECT)
-    # device_fcm_token = models.CharField(max_length=255, null=True, blank=True)
-    # fk_cart = models.OneToOneField('Cart', null=True, blank=True, on_delete=models.PROTECT)
     created_on = models.DateTimeField(auto_now_add=True)
     objects = UserManager()
 
@@ -186,5 +139,5 @@ class Coupon(models.Model):
 
 
     class Meta:
-        managed = True
+        managed = True;
         db_table = 'Coupon'

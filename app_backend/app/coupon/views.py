@@ -25,23 +25,6 @@ class CouponViewSet(viewsets.GenericViewSet):
     authentication_classes = (TokenAuthentication,)
     queryset = Coupon.objects.all()
     serializer_class = serializers.CouponListSerializer
-    lookup_field = 'pk_coupon_id'
-
-    def get_object(self):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-
-        assert lookup_url_kwarg in self.kwargs, (
-            (self.__class__.__name__, lookup_url_kwarg)
-        )
-
-        filter_kwargs = {self.lookup_field: self.kwargs[lookup_url_kwarg]}
-        obj = get_object_or_404(queryset, **filter_kwargs)
-        # May raise a permission denied
-        # self.check_object_permissions(self.request, obj)
-
-        return obj
 
     def get_queryset(self):
         if self.action == 'get_coupons':
@@ -57,7 +40,7 @@ class CouponViewSet(viewsets.GenericViewSet):
                 return User.objects.filter(user_type=3)
             if self.request.user.user_type == 3:
                 return User.objects.filter(user_type=4)
-            queryset = User.objects.all()
+            queryset = User.objects.none()
             return queryset
         if self.action == 'get_all_users':
             return User.objects.all()
@@ -147,7 +130,12 @@ class CouponViewSet(viewsets.GenericViewSet):
             if request.user.user_type is not 5:
                 queryset = self.get_queryset()
                 coupons_queryset = Coupon.objects.filter(fk_assigned_to=request.user, redeemed=False,
-                                                 shared_to_student=False)
+                                                         shared_to_student=False)
+
+                # yesterday = datetime.date.today() - datetime.timedelta(days=1)
+                # coupons_queryset = Coupon.objects.filter(fk_assigned_to=request.user, redeemed=False,
+                #                                          shared_to_student=False, created_on__gt=yesterday)
+
                 for i in queryset:
                     item_count = len(coupons_queryset.filter(fk_item=i))
                     dct_item_counts[str(i.item_code)] = {'total_count': item_count}
@@ -204,42 +192,42 @@ class CouponViewSet(viewsets.GenericViewSet):
             'error': '',
             'message': 'Coupons Assigned',
         }
-        # try:
+        try:
 
-        username = request.data.get('name', None)
-        user = User.objects.get(name=username)
-        count = request.data.get('count', 0)
-        item_code = request.data.get('item_code', None)
-        item = Item.objects.get(item_code=item_code)
-        if request.user.user_type == 1 and user.user_type in [2, 3]:
-            queryset = Coupon.objects.filter(fk_item=item, fk_cg_user=None, redeemed=False,
-                                             shared_to_student=False).values('pk_coupon_id')[:count]
-            stripped_queryset = Coupon.objects.filter(pk__in=queryset)
-            stripped_queryset.update(fk_assigned_to=user)
-            if user.user_type == 2:
-                stripped_queryset.update(fk_cg_user=user)
-            else:
+            username = request.data.get('name', None)
+            user = User.objects.get(name=username)
+            count = request.data.get('count', 0)
+            item_code = request.data.get('item_code', None)
+            item = Item.objects.get(item_code=item_code)
+            if request.user.user_type == 1 and user.user_type in [2, 3]:
+                queryset = Coupon.objects.filter(fk_item=item, fk_cg_user=None, redeemed=False, fk_coordinator=None,
+                                                 shared_to_student=False).values('pk_coupon_id')[:count]
+                stripped_queryset = Coupon.objects.filter(pk__in=queryset)
+                stripped_queryset.update(fk_assigned_to=user)
+                if user.user_type == 2:
+                    stripped_queryset.update(fk_cg_user=user)
+                else:
+                    stripped_queryset.update(fk_coordinator=user)
+            elif request.user.user_type == 2 and user.user_type == 3:
+                queryset = Coupon.objects.filter(fk_item=item, fk_coordinator=None, redeemed=False,
+                                                 shared_to_student=False).values('pk_coupon_id')[:count]
+                stripped_queryset = Coupon.objects.filter(pk__in=queryset)
+                stripped_queryset.update(fk_assigned_to=user)
                 stripped_queryset.update(fk_coordinator=user)
-        elif request.user.user_type == 2 and user.user_type == 3:
-            queryset = Coupon.objects.filter(fk_item=item, fk_coordinator=None, redeemed=False,
-                                             shared_to_student=False).values('pk_coupon_id')[:count]
-            stripped_queryset = Coupon.objects.filter(pk__in=queryset)
-            stripped_queryset.update(fk_assigned_to=user)
-            stripped_queryset.update(fk_coordinator=user)
-        elif request.user.user_type == 3 and user.user_type == 4:
-            queryset = Coupon.objects.filter(fk_item=item, fk_organizer=None, redeemed=False,
-                                             shared_to_student=False).values('pk_coupon_id')[:count]
-            stripped_queryset = Coupon.objects.filter(pk__in=queryset)
-            stripped_queryset.update(fk_assigned_to=user)
-            stripped_queryset.update(fk_organizer=user)
-        else:
-            raise ValidationError(ValidationError(_(f'Transfer permission denied'), ))
-        return Response('Success', status=status.HTTP_200_OK)
-        # except Exception as e:
-        #     response['error'] = str(e)
-        #     response['status'] = "FAIL"
-        #     response['message'] = "Coupons could not be assigned"
-        #     return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            elif request.user.user_type == 3 and user.user_type == 4:
+                queryset = Coupon.objects.filter(fk_item=item, fk_organizer=None, redeemed=False,
+                                                 shared_to_student=False).values('pk_coupon_id')[:count]
+                stripped_queryset = Coupon.objects.filter(pk__in=queryset)
+                stripped_queryset.update(fk_assigned_to=user)
+                stripped_queryset.update(fk_organizer=user)
+            else:
+                raise ValidationError(ValidationError(_(f'Transfer permission denied'), ))
+            return Response('Success', status=status.HTTP_200_OK)
+        except Exception as e:
+            response['error'] = str(e)
+            response['status'] = "FAIL"
+            response['message'] = "Coupons could not be assigned"
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['POST'], detail=False, url_path='get-coupon')
     def get_coupon(self, request, **kwargs):

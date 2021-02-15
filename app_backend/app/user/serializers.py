@@ -4,9 +4,6 @@ from core import models
 from rest_framework import serializers
 
 
-# from coupon-app.core.models import UserAccountInformation
-
-
 class CommitteeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Committee
@@ -63,8 +60,6 @@ class AuthTokenSerializer(serializers.Serializer):
         """Validate and authenticate the user"""
         name = attrs.get('name')
         password = attrs.get('password')
-        print(name)
-        print(password)
         user = authenticate(
             request=self.context.get('request'),
             username=name,
