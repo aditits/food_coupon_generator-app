@@ -42,7 +42,7 @@ class _CouponListScreenState extends State<CouponListScreen> with BaseLayout {
     'https://www.lowcarblab.com/images/2018/05/dr-fung-intermittent-fasting-lose-weight.jpg',
   ];
 
-  TextEditingController _restaurantSearchStringController =
+  TextEditingController _itemSearchStringController =
       TextEditingController();
 
   @override
@@ -111,7 +111,7 @@ class _CouponListScreenState extends State<CouponListScreen> with BaseLayout {
         title: !silverCollapsed
             ? SearchBar(
                 filterSearchResults: filterSearchResults,
-                editingController: _restaurantSearchStringController,
+                editingController: _itemSearchStringController,
                 hintText: 'Search For Coupon',
                 fillColor: Colors.yellow[700],
                 borderColor: Colors.yellow[700],
@@ -263,7 +263,7 @@ class _CouponListScreenState extends State<CouponListScreen> with BaseLayout {
                     ),
                     Spacer(),
                     Text("${_filteredCoupons[i].itemCount.totalCount} Left"),
-                    IconButton(
+              userType==1? IconButton(
                       onPressed: () {
                         showDialog<int>(
                                 context: context,
@@ -280,17 +280,17 @@ class _CouponListScreenState extends State<CouponListScreen> with BaseLayout {
                                     value, _filteredCoupons[i].itemCode)
                                 .then((value) => getItems()));
                       },
-                      icon: userType==1? Icon(Icons.add_circle_outline):SizedBox(),
+                      icon: Icon(Icons.add_circle_outline),
                       color: Colors.blueAccent,
-                    ),
+                    ):SizedBox(),
                     IconButton(
                       onPressed: () {
-          if (_filteredCoupons[i].itemCount.totalCount > 0) {
-            _showDialog(_filteredCoupons[i]);
-          }
-          else{
-            showToast('No Coupons to share');
-          }
+                           if (_filteredCoupons[i].itemCount.totalCount > 0) {
+                                _showDialog(_filteredCoupons[i]);
+                              }
+                           else{
+                              showToast('No Coupons to share');
+                           }
 //
                       },
                       icon: Icon(Icons.share),
@@ -319,12 +319,11 @@ class _CouponListScreenState extends State<CouponListScreen> with BaseLayout {
                     OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                 title: Container(
                   width: 100, //0.8
-                  // width: SizeConfig.screenWidth*0.8,//0.8
                   child: Column(children: <Widget>[
-                    FlatButton(
+                    userType!=4?FlatButton(
                       onPressed: () async {
                         if (item.itemCount.totalCount > 0) {
-                          CouponProvider().setItem(item);
+                          CouponProvider().setItem(item); 
                           Navigator.of(context).pop();
                           Navigator.of(context)
                               .pushNamed('/coupon-share')
@@ -335,7 +334,7 @@ class _CouponListScreenState extends State<CouponListScreen> with BaseLayout {
                       },
                       color: Colors.orangeAccent,
                       child: Text('Share'),
-                    ),
+                    ):SizedBox(),
                     FlatButton(
                       onPressed: () {
 

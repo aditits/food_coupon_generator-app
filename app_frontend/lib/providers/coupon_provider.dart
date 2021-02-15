@@ -16,7 +16,6 @@ class CouponProvider with ChangeNotifier {
   static Item item;
   static Item itemShared;
 
-//  GlobalKey<NavigatorState> navigatorKey;
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
   List<Coupon> _coupons = [];
@@ -41,13 +40,6 @@ class CouponProvider with ChangeNotifier {
         _coupons.add(tempCoupon);
       }
       return _coupons;
-
-//      _restaurants.sort((a, b) {
-//        if (b.isActive) {
-//          return 1;
-//        }
-//        return -1;
-//      });
 
     } catch (error) {
       showToast(error.toString());

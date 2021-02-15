@@ -12,7 +12,7 @@ class ItemProvider with ChangeNotifier {
   ApiBaseHelper _helper = ApiBaseHelper();
   static var storageService = locator<LocalStorageService>();
 
-//  GlobalKey<NavigatorState> navigatorKey;
+
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
   List<Item> _items = [];
@@ -20,7 +20,6 @@ class ItemProvider with ChangeNotifier {
 
   Future fetchAndSetItems() async {
     const targetUrl = '/coupon/coupons/get-items/';
-//    const targetUrl = '/admin-user/restaurant/';
     try {
       final response = await _helper.get(url: targetUrl);
       print(response);
@@ -34,13 +33,6 @@ class ItemProvider with ChangeNotifier {
         _items.add(tempItem);
       }
       return _items;
-
-//      _restaurants.sort((a, b) {
-//        if (b.isActive) {
-//          return 1;
-//        }
-//        return -1;
-//      });
 
     } catch (error) {
       showToast(error.toString());
@@ -73,6 +65,5 @@ class ItemProvider with ChangeNotifier {
       showToast(error.toString());
     }
   }
-
 
 }

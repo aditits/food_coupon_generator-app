@@ -58,7 +58,6 @@ class _LoginScreenState extends State<LoginScreen>
     Map _credentials ={
       'username': _userName,
       'password': _password,
-      'fcm_token': _strFcmToken
     };
     print(_credentials);
     var response;
