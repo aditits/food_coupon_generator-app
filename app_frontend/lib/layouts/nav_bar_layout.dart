@@ -14,9 +14,8 @@ import 'vendor_tab_above_layout.dart';
 
 class NavBarLayoutScreen extends StatefulWidget {
   static const routeName = '/main';
-  final String pageNumber;
 
-  NavBarLayoutScreen({this.pageNumber = 'profile 2'});
+  NavBarLayoutScreen();
 
   @override
   NavBarLayoutScreenState createState() => NavBarLayoutScreenState();
@@ -43,7 +42,6 @@ class NavBarLayoutScreenState extends State<NavBarLayoutScreen>
     tabController.addListener(() {
       if (mounted) setState(() {});
     });
-//    CartProvider().setTabController(this.tabController);
   }
 
   @override

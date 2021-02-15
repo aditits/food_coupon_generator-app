@@ -27,6 +27,7 @@ class ApiBaseHelper {
 //  static final String baseUrl = 'http://192.168.56.1:8000';
 //  static final String baseUrl = 'http://192.168.1.107:8000';
   static final String baseUrl = 'http://10.0.2.2:8000';
+//  static final String baseUrl = 'http://192.168.29.74:8000';
 
   Future<dynamic> post({String url, data: null}) async {
     final _targetUrl = baseUrl + url;
@@ -120,38 +121,6 @@ class ApiBaseHelper {
     }
     print(responseJson);
     return responseJson;
-  }
-
-  Future<dynamic> uploadImage({String url, imageFile}) async {
-    final _targetUrl = baseUrl + url;
-    fetchToken();
-    print(_targetUrl);
-    var responseJson;
-    Uri uri = Uri.parse(_targetUrl);
-    try {
-      if (imageFile != null) {
-        var stream =
-            http.ByteStream(asy.DelegatingStream.typed(imageFile.openRead()));
-        var length = await imageFile.length();
-
-        var request = new http.MultipartRequest("POST", uri);
-
-        var multipartFile = http.MultipartFile('dish_image', stream, length,
-            filename: basename(imageFile.path));
-
-        request.files.add(multipartFile);
-        Map<String, String> headers = {"Authorization": token};
-        request.headers.addAll(headers);
-        var response = await request.send();
-        return response;
-
-
-      }
-    } on SocketException {
-      throw FetchDataException('No Internet Connection');
-    }
-//    print(responseJson);
-//    return responseJson;
   }
 }
 

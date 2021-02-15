@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 class AuthenticationProvider with ChangeNotifier {
   ApiBaseHelper _helper = ApiBaseHelper();
   static var storageService = locator<LocalStorageService>();
-//  GlobalKey<NavigatorState> navigatorKey;
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Future<dynamic> generateOtp(credentials) async {

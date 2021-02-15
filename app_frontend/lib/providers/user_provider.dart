@@ -106,12 +106,6 @@ class UserProvider with ChangeNotifier {
       }
       return _users;
 
-//      _restaurants.sort((a, b) {
-//        if (b.isActive) {
-//          return 1;
-//        }
-//        return -1;
-//      });
 
     } catch (error) {
       showToast(error.toString());
